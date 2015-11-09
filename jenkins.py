@@ -281,7 +281,7 @@ class Jenkins(object):
             print '-' * 50
             print '* Get Jenkins Version'
             print '-' * 50
-            self.__get_version()
+            self.__get_version() #获取版本信息
 
             print '-' * 50
             print '* Get Jenkins All user'
