@@ -1,4 +1,0 @@
-* detect Jenkins anonymous access
-[1;31;40m[+]....http://upload.testdev.pcmgr.qq.com:8090/script unable anonymous access![0m
-http://upload.testdev.pcmgr.qq.com:8090/people/
-[u'jenniwang', u'zigonxu', u'farianli', u'eckochen', u'ethanxhuang', u'lichaoli', u'_.._..__.._..__.._..__.._..__.._..__etc_passwd%00.jpg', u'jeremychang', u'oppochen', u'cathykong', u'jenwang', u'kevanzhang', u'jiaminghe', u'nanli', u'cassieyang', u'alexwei', u'killerzhang', u'cisbuilder', u'slave_proxy']
