@@ -9,4 +9,4 @@ Jenkins匿名脚本访问探测、用户抓取并批量爆破
 
 使用方法
 
-   python -u http://www.xxx.com/jenkins/
+   python jenkins.py -u http://www.xxx.com/jenkins/
