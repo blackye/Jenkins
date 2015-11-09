@@ -276,6 +276,7 @@ class Jenkins(object):
         print '* Detect Jenkins anonymous access'
         print '-' * 50
         info, status = self.__bAnonymous_access()
+
         if status == 1 and not info:
             print '-' * 50
             print '* Get Jenkins Version'
