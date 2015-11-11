@@ -169,8 +169,6 @@ class Jenkins(object):
                 if href != u'/':
                     self.user_list.append(href.replace('/user/', '').strip('/'))
 
-            print self.user_list
-
         except requests.exceptions.ConnectTimeout:
             color_output("[-]....%s timeout!" % user_link)
         except Exception:
@@ -196,7 +194,7 @@ class Jenkins(object):
                 proxy_num = re_list[0][re_list[0].rfind('/')+1:-1]
                 crumb = re_list[1].strip('\'')
 
-                if re_list[2].find('start') == -1:
+                if len(re_list) == 3 and re_list[2].find('start') == -1:
                     self.user_list.extend(self.__get_peopel_waiting_done(urllib2, user_link, crumb, proxy_num))
                 else:
                     start_url = '%s/$stapler/bound/%s/start' % (self.url, proxy_num)
@@ -245,7 +243,6 @@ class Jenkins(object):
                     try:
                         content = resp.read()
                         ret_json = json.loads(content, encoding="utf-8")
-
                         for item in ret_json['data']:
                             if item['id'] != None:
                                 user_list.append(item['id'])
