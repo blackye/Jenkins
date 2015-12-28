@@ -188,14 +188,14 @@ class Jenkins(object):
 
         try:
             html = urllib2.urlopen(user_link, timeout = self.timeout).read()
-            result = re.findall(u'proxy=makeStaplerProxy\(\'(.*);</script><script>', html)
+            result = re.findall(u'makeStaplerProxy\(\'(.*);</script>', html)
             if len(result) != 0:
                 re_list = result[0].split(',')
                 proxy_num = re_list[0][re_list[0].rfind('/')+1:-1]
                 crumb = re_list[1].strip('\'')
 
-                if len(re_list) == 3 and re_list[2].find('start') == -1:
-                    self.user_list.extend(self.__get_peopel_waiting_done(urllib2, user_link, crumb, proxy_num))
+                if len(re_list) == 4 and re_list[2].find('start') == -1:
+                    self.user_list.extend(self.__get_peopel_waiting_done(urllib2, user_link ,crumb, proxy_num))
                 else:
                     start_url = '%s/$stapler/bound/%s/start' % (self.url, proxy_num)
                     req = urllib2.Request(start_url, data = '[]')
